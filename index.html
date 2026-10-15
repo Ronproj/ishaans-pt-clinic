@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ishaans PT Clinic</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: clinical practice site — strict grid, hairline rules, square edges; navy primary with a restrained clay accent */
+:root{
+  --bg:#f7f8f9; --surface:#ffffff; --ink:#14202e; --muted:#5a6573; --line:#d8dde3;
+  --tape-blue:#1c4673; --tape-pink:#a5513d; --body:#cdd5de; --body-hi:#9aa8b8; --soft:#eef1f4;
+  --ok:#1f8a5b;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r:2px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --surface:#161d26; --ink:#e6eaef; --muted:#9aa6b4; --line:#2a3440;
+  --tape-blue:#7fa6d6; --tape-pink:#d48a75; --body:#2c3744; --body-hi:#44536a; --soft:#1c2530; --ok:#4fc78f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --surface:#161d26; --ink:#e6eaef; --muted:#9aa6b4; --line:#2a3440;
+  --tape-blue:#7fa6d6; --tape-pink:#d48a75; --body:#2c3744; --body-hi:#44536a; --soft:#1c2530; --ok:#4fc78f; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.01em;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.2rem,4.6vw,3.4rem)} h2{font-size:clamp(1.8rem,3.6vw,2.6rem)} h3{font-size:1.3rem}
+p{margin:0}
+a{color:var(--tape-blue)}
+:focus-visible{outline:3px solid var(--tape-blue);outline-offset:2px;border-radius:2px}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font-family:var(--sans);font-weight:600;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tape-blue);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
+.lede{color:var(--muted);font-size:1.12rem;max-width:62ch}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:2px;padding:12px 22px;font:600 1rem var(--sans);cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn{padding:12px 22px;letter-spacing:.01em}
+.btn:hover{filter:brightness(1.08)}
+.btn-primary{background:var(--tape-blue);color:#fff}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.tag{display:inline-block;font-family:var(--sans);font-weight:600;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:2px;background:var(--soft);color:var(--muted)}
+.section{padding-block:72px}
+.section-head{display:grid;gap:12px;margin-bottom:36px;padding-top:28px;border-top:1px solid var(--line)}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--surface);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:66px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--display);font-size:1.25rem}
+.brand-mark{width:34px;height:34px;flex:none}
+.links{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+.links a{display:block;padding:8px 10px;border-radius:2px;text-decoration:none;color:var(--muted);font-weight:500}
+.links a:hover{color:var(--ink)}
+.links a[aria-current="page"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--tape-blue)}
+.menu-btn{display:none;background:none;border:1.5px solid var(--line);border-radius:2px;padding:8px 12px;color:var(--ink);font:600 .9rem var(--sans);cursor:pointer}
+@media (max-width:860px){
+  .menu-btn{display:block}
+  .links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
+  .links.open{display:flex}
+  .nav-cta{display:none}
+}
+
+/* tape motif */
+.tape{position:absolute;height:26px;border-radius:2px;opacity:.92;background-image:repeating-linear-gradient(90deg,transparent 0 10px,rgba(255,255,255,.18) 10px 11px)}
+.tape.pink{background-color:var(--tape-pink)} .tape.blue{background-color:var(--tape-blue)}
+
+/* photo frames with designed fallback */
+.photo{position:relative;margin:0;border-radius:var(--r);overflow:hidden;background:
+  radial-gradient(120% 90% at 20% 10%,var(--soft),transparent 60%),
+  linear-gradient(160deg,var(--body),var(--soft));aspect-ratio:4/3;max-width:100%}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:16px;color:var(--muted)}
+.photo .ph svg{width:64px;height:64px;opacity:.6}
+.photo .ph span{display:block;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-top:8px}
+.photo:has(img) .ph{display:none}
+
+/* hero */
+.hero{padding-block:56px 72px;position:relative;overflow:hidden;background:var(--surface);border-bottom:1px solid var(--line);margin-bottom:72px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.hero-grid>*{min-width:0}
+.hero h1{font-size:clamp(2rem,3.8vw,3rem)}
+.hero-copy{display:grid;gap:22px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero-art{position:relative}
+.hero-art .photo{aspect-ratio:4/5}
+.hero-art .t1{top:4px;left:-8px;width:120px;transform:rotate(-14deg)}
+.hero-art .t2{bottom:30px;right:-6px;width:150px;transform:rotate(9deg)}
+.stat-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);padding-top:18px}
+.stat-strip div+div{border-left:1px solid var(--line);padding-left:18px}
+.stat-strip div{display:grid}
+.stat-strip b{font-family:var(--display);font-size:1.45rem;font-weight:600}
+.stat-strip small{color:var(--muted);font-size:.85rem}
+.qual{border-left:2px solid var(--tape-blue);padding-left:16px;color:var(--muted);max-width:60ch}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-art{max-width:420px}}
+
+/* services */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:grid;gap:10px;align-content:start}
+.card{padding:0 0 22px;border-width:0 0 1px;background:transparent}
+.card .photo{aspect-ratio:16/10;margin-bottom:8px}
+.side .card{border-width:1px;background:var(--surface);padding:22px}
+.card p{color:var(--muted)}
+
+/* body explorer */
+.explorer{display:grid;border-top:2px solid var(--ink);grid-template-columns:minmax(260px,380px) 1fr;gap:32px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:28px}
+.explorer>*{min-width:0}
+.body-wrap{position:relative;display:grid;gap:12px;justify-items:center}
+.body-svg{width:100%;max-width:340px;height:auto}
+.body-svg .limb{stroke:var(--body);stroke-linecap:round;fill:none}
+.body-svg .mass{fill:var(--body)}
+.body-svg .zone{fill:var(--tape-pink);opacity:0;transition:opacity .25s}
+.body-svg .zone.on{opacity:.28}
+.hot{cursor:pointer}
+.hot circle.dot{fill:var(--tape-blue);stroke:var(--surface);stroke-width:2}
+.hot circle.ring{fill:none;stroke:var(--tape-blue);stroke-width:1.5;opacity:.5}
+.hot.active circle.dot{fill:var(--tape-pink)} .hot.active circle.ring{stroke:var(--tape-pink)}
+.hot:hover circle.dot,.hot:focus-visible circle.dot{fill:var(--tape-pink)}
+.hot:focus{outline:none}
+@keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+.view-toggle{display:inline-flex;border:1px solid var(--line);border-radius:2px}
+.view-toggle button{border:0;background:transparent;padding:6px 14px;border-radius:2px;font:600 .85rem var(--sans);color:var(--muted);cursor:pointer}
+.view-toggle button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:2px;padding:6px 13px;font:500 .88rem var(--sans);cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--surface)}
+.info{display:grid;gap:18px}
+.info h3{font-size:1.9rem}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.info-grid>*{min-width:0}
+@media (max-width:900px){.explorer{grid-template-columns:1fr;padding:20px}.info-grid{grid-template-columns:1fr}}
+.panel{background:transparent;border-top:1px solid var(--line);border-radius:0;padding:14px 0 0;display:grid;gap:8px;align-content:start}
+.panel h4{margin:0;font-family:var(--sans);font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.panel ul,.panel ol{margin:0;padding-left:20px}
+.rom{display:grid;gap:10px}
+.rom svg{width:100%;max-width:260px;height:auto}
+.rom .arc-bg{stroke:var(--soft)} .rom .arc-fg{stroke:var(--tape-blue)}
+.rom .needle{stroke:var(--tape-pink);stroke-width:3;stroke-linecap:round}
+.rom .deg{font-family:var(--mono);fill:var(--ink);font-size:22px}
+.rom .lbl{font-family:var(--mono);fill:var(--muted);font-size:11px}
+.rom select,.rom input{width:100%}
+.disclaimer{font-size:.82rem;color:var(--muted)}
+
+/* testimonials */
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.quote{background:transparent;border:0;border-top:2px solid var(--ink);border-radius:0;padding:20px 0 8px;display:grid;gap:14px;align-content:start}
+.quote blockquote{margin:0;font-family:var(--display);font-size:1.12rem;line-height:1.5}
+.quote footer{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.9rem}
+.avatar{display:none!important;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;flex:none}
+.stars{display:none}
+.notice{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:12px 16px;color:var(--muted);font-size:.92rem;margin-bottom:24px}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+
+/* booking */
+.book{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:start}
+.book>*{min-width:0}
+@media (max-width:900px){.book{grid-template-columns:1fr}}
+form.panel-form{background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:24px;display:grid;gap:18px}
+.field{display:grid;gap:6px}
+.field label,.legend{font-weight:600;font-size:.92rem}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:10px 12px;width:100%}
+textarea{min-height:90px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:560px){.row2{grid-template-columns:1fr}}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.svc{position:relative}
+.svc input{position:absolute;opacity:0;pointer-events:none}
+.svc label{display:grid;gap:2px;border:1px solid var(--line);border-radius:2px;padding:12px 14px;cursor:pointer;background:var(--bg);height:100%}
+.svc label small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+.svc input:checked+label{border-color:var(--tape-blue);box-shadow:inset 3px 0 0 var(--tape-blue);background:var(--soft)}
+.svc input:focus-visible+label{outline:3px solid var(--tape-blue);outline-offset:2px}
+.slots{display:flex;flex-wrap:wrap;gap:8px}
+.slot{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:2px;padding:8px 12px;font:500 .9rem var(--mono);cursor:pointer}
+.slot[aria-pressed="true"]{background:var(--tape-blue);border-color:var(--tape-blue);color:#fff}
+.slot:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+.err{color:var(--tape-pink);font-size:.9rem}
+.confirm{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--ok);border-radius:2px;padding:24px;display:grid;gap:10px}
+.confirm h3{color:var(--ok)}
+.side{display:grid;gap:16px}
+.hours{width:100%;border-collapse:collapse;font-size:.95rem}
+.hours td{padding:6px 0;border-bottom:1px solid var(--line)}
+.hours td:last-child{text-align:right;font-family:var(--mono);font-size:.85rem;font-variant-numeric:tabular-nums}
+
+/* socials */
+.ig-card{display:flex;flex-wrap:wrap;gap:22px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:24px;margin-bottom:28px}
+.ig-ava{width:84px;height:84px;border-radius:50%;padding:2px;background:var(--line);flex:none}
+.ig-ava div{width:100%;height:100%;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-family:var(--display);font-size:2rem}
+.ig-meta{display:grid;gap:6px;flex:1;min-width:220px}
+.ig-meta .handle{font-weight:700;font-size:1.2rem}
+.ig-counts{display:flex;gap:20px;color:var(--muted);font-size:.92rem}
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:700px){.ig-grid{grid-template-columns:repeat(2,1fr)}}
+.post{position:relative;display:block;border-radius:2px;overflow:hidden;aspect-ratio:4/5;text-decoration:none;color:#fff;background:var(--tape-blue)}
+.post.alt{background:var(--ink)}
+.post .play{position:absolute;inset:0;display:grid;place-items:center}
+.post .play span{width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);display:grid;place-items:center;transition:background .2s}
+.post:hover .play span{background:rgba(255,255,255,.15)}
+.post .cap{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.6));font-size:.88rem;line-height:1.35}
+.post .kind{position:absolute;top:10px;left:10px;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(0,0,0,.35);padding:3px 8px;border-radius:2px}
+
+/* certifications */
+.certs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.cert{position:relative;background:var(--surface);border-top:2px solid var(--ink)!important;border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:10px;align-content:start;overflow:hidden}
+.cert .seal{width:44px;height:44px;border:1px solid var(--tape-blue);display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:.85rem;color:var(--tape-blue)}
+.cert dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:.9rem}
+.cert dt{color:var(--muted)} .cert dd{margin:0;font-family:var(--mono);font-size:.82rem}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+
+/* faq */
+.faq-tools{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.faq-tools input{max-width:420px}
+.faq{display:grid;max-width:820px;border-top:2px solid var(--ink)}
+.faq details{border-bottom:1px solid var(--line);padding:2px 0}
+.faq summary{cursor:pointer;font-weight:600;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::after{content:"+";font-family:var(--mono);color:var(--tape-blue);font-size:1.2rem}
+.faq details[open] summary::after{content:"–"}
+.faq details p{color:var(--muted);padding-bottom:16px;max-width:68ch}
+
+/* blog */
+.blog-feature{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center;border-top:2px solid var(--ink);padding-top:24px;margin-bottom:40px;text-decoration:none;color:inherit}
+.blog-feature>*{min-width:0}
+.blog-feature h3{font-size:clamp(1.5rem,2.6vw,2rem)}
+.blog-feature:hover h3,.post-card:hover h3{color:var(--tape-blue)}
+.post-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px}
+.post-card{display:grid;gap:10px;align-content:start;text-decoration:none;color:inherit;border-bottom:1px solid var(--line);padding-bottom:20px}
+.post-card .photo{aspect-ratio:16/10}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:.85rem}
+.meta b{color:var(--tape-blue);font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:.72rem;align-self:center}
+.excerpt{color:var(--muted)}
+.article{max-width:720px;margin:0 auto;display:grid;gap:22px}
+.article h1{font-size:clamp(2rem,4vw,2.8rem)}
+.article .photo{aspect-ratio:16/9}
+.article-body{display:grid;gap:16px;font-size:1.06rem}
+.article-body h2{font-size:1.45rem;margin-top:10px}
+.article-body ul,.article-body ol{margin:0;padding-left:22px;display:grid;gap:6px}
+.article-body blockquote{margin:0;border-left:2px solid var(--tape-blue);padding-left:16px;font-family:var(--display);font-size:1.15rem}
+.back-link{font-weight:600;text-decoration:none}
+.byline{display:flex;gap:12px;align-items:center;border-block:1px solid var(--line);padding-block:12px;color:var(--muted);font-size:.9rem}
+.byline b{color:var(--ink)}
+@media (max-width:760px){.blog-feature{grid-template-columns:1fr}}
+
+/* cta band + footer */
+.band{background:var(--tape-blue);color:#fff;border-radius:0;padding:40px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
+.band h2,.band p{color:#fff}.band p{opacity:.85}
+footer.site{border-top:1px solid var(--line);margin-top:40px;padding-block:32px;color:var(--muted);font-size:.9rem}
+footer.site .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+
+/* chatbot */
+.chat-fab{box-shadow:0 6px 18px rgba(0,0,0,.18)!important;position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:70;border:0;border-radius:2px;background:var(--ink);color:var(--surface);padding:13px 18px;font:700 .95rem var(--sans);cursor:pointer;display:flex;gap:8px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.chat{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:70;width:min(380px,calc(100vw - 32px));height:min(540px,calc(100vh - 140px));background:var(--surface);border:1px solid var(--line);border-radius:2px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.chat-head{padding:14px 16px;background:var(--ink);color:var(--surface);display:flex;justify-content:space-between;align-items:center}
+.chat-head b{display:block} .chat-head small{opacity:.85}
+.chat-head button{background:none;border:0;color:inherit;font-size:1.4rem;cursor:pointer}
+.chat-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:85%;padding:10px 13px;border-radius:2px;font-size:.93rem;line-height:1.45}
+.msg.bot{background:var(--soft);border:1px solid var(--line);align-self:flex-start;}
+.msg.me{background:var(--tape-blue);color:#fff;align-self:flex-end;}
+.msg a{color:inherit;font-weight:600}
+.typing{display:inline-flex;gap:4px} .typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1s infinite} .typing i:nth-child(2){animation-delay:.2s} .typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.25}}
+.chat-quick{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px}
+.chat-quick button{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:2px;padding:5px 11px;font:500 .8rem var(--sans);cursor:pointer}
+.chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+.chat-form input{flex:1;min-width:0}
+.chat-form button{border:0;border-radius:2px;background:var(--tape-blue);color:#fff;padding:0 14px;font-weight:700;cursor:pointer}
+
+.page[hidden]{display:none!important}
+.page{animation:fade .35s ease}
+@keyframes fade{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#home" aria-label="Ishaans PT Clinic home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="var(--tape-blue)"/><path d="M13 11h14M13 29h14M20 11v18" stroke="#fff" stroke-width="2.5"/></svg>
+      Ishaans PT Clinic
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks">Menu</button>
+    <ul class="links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#book">Book Us</a></li>
+      <li><a href="#socials">Socials</a></li>
+      <li><a href="#certifications">Certifications</a></li>
+      <li><a href="#faq">FAQs</a></li>
+      <li><a href="#blog">Blog</a></li>
+    </ul>
+    <a class="btn btn-primary nav-cta" href="#book">Book a visit</a>
+  </div>
+</header>
+
+<main>
+<!-- HOME -->
+<section class="page" id="page-home" data-page="home">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Doctor of Physical Therapy · Pelvic floor · Neuro rehab</span>
+        <h1>Physical therapy for pelvic health, neurological recovery and everyday movement.</h1>
+        <p class="qual">Skilled Physical Therapist adept in patient assessment and neuro rehabilitation. Excelled in designing customized treatment plans, enhancing functional mobility, and mentoring clinical staff. Demonstrates exceptional diagnostic testing abilities and a compassionate approach to patient care, significantly improving patient outcomes.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#book">Book an evaluation</a>
+          <a class="btn btn-ghost" href="#explore">Explore the body map</a>
+        </div>
+        <div class="stat-strip" aria-label="Placeholder clinic figures">
+          <div><b>1:1</b><small>Full sessions with Dr. Kapoor</small></div>
+          <div><b>60 min</b><small>Initial evaluation</small></div>
+          <div><b>Same week</b><small>Appointments (placeholder)</small></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <figure class="photo" data-src="images/hero.jpg" data-alt="Physical therapist assessing a patient's knee on a treatment table">
+          <div class="ph"><div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="32" cy="12" r="7"/><path d="M32 20v18M32 38l-10 18M32 38l10 18M18 28h28"/></svg><span>Photo · Dr. Kapoor with a patient</span></div></div>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">What we treat</span><h2>Care built around how you move</h2></div>
+      <div class="cards">
+        <article class="card">
+          <figure class="photo" data-src="images/pelvic.jpg" data-alt="Therapist coaching a patient through a breathing exercise"><div class="ph"><div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M10 50h44M20 50c0-14 6-22 12-22s12 8 12 22"/><circle cx="32" cy="18" r="6"/></svg><span>Photo · pelvic health</span></div></div></figure>
+          <h3>Pelvic floor therapy</h3><p>Private, one-on-one care for bladder leakage, pelvic pain, pregnancy and postpartum recovery.</p></article>
+        <article class="card">
+          <figure class="photo" data-src="images/neuro.jpg" data-alt="Patient practicing walking between parallel bars with a therapist"><div class="ph"><div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M32 8c10 0 16 8 16 16 0 10-8 12-8 20H24c0-8-8-10-8-20 0-8 6-16 16-16zM26 52h12"/></svg><span>Photo · neuro rehab</span></div></div></figure>
+          <h3>Neuro rehabilitation</h3><p>Balance, gait and strength work after stroke, concussion, Parkinson's or other neurological conditions.</p></article>
+        <article class="card">
+          <figure class="photo" data-src="images/ortho.jpg" data-alt="Patient doing a resistance band shoulder exercise"><div class="ph"><div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M8 32h8M48 32h8M16 22v20M48 22v20M16 32h32"/></svg><span>Photo · orthopedic rehab</span></div></div></figure>
+          <h3>Orthopedic and sports rehab</h3><p>Back, neck, shoulder and knee pain, sprains, and recovery after surgery, with a plan made for your goals.</p></article>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="explore" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">Interactive body map</span><h2>Tap a body part to learn how it works</h2><p class="lede">Each area shows common conditions, typical range of motion in degrees, a starter exercise, and how a physical therapist helps.</p></div>
+      <div class="explorer">
+        <div class="body-wrap">
+          <div class="view-toggle" role="group" aria-label="Body view">
+            <button type="button" id="viewFront" aria-pressed="true">Front</button>
+            <button type="button" id="viewBack" aria-pressed="false">Back</button>
+          </div>
+          <svg class="body-svg" id="bodySvg" viewBox="0 0 300 600" role="img" aria-label="Body diagram with selectable areas">
+            <g id="figure">
+              <circle class="mass" cx="150" cy="60" r="32"/>
+              <line class="limb" x1="150" y1="90" x2="150" y2="120" stroke-width="24"/>
+              <path class="mass" d="M104 120 Q150 108 196 120 Q202 126 199 140 L190 222 Q186 262 190 304 L110 304 Q114 262 110 222 L101 140 Q98 126 104 120 Z"/>
+              <polyline class="limb" points="106,132 84,232 72,322" stroke-width="26" stroke-linejoin="round"/>
+              <polyline class="limb" points="194,132 216,232 228,322" stroke-width="26" stroke-linejoin="round"/>
+              <circle class="mass" cx="70" cy="340" r="14"/><circle class="mass" cx="230" cy="340" r="14"/>
+              <polyline class="limb" points="130,300 124,430 120,548" stroke-width="32" stroke-linejoin="round"/>
+              <polyline class="limb" points="170,300 176,430 180,548" stroke-width="32" stroke-linejoin="round"/>
+              <ellipse class="mass" cx="112" cy="566" rx="22" ry="11"/><ellipse class="mass" cx="188" cy="566" rx="22" ry="11"/>
+              <g id="backLines" display="none"><line x1="150" y1="118" x2="150" y2="296" stroke="var(--body-hi)" stroke-width="3" stroke-dasharray="6 6"/><path d="M118 150 Q132 172 146 160 M182 150 Q168 172 154 160" stroke="var(--body-hi)" stroke-width="3" fill="none"/></g>
+            </g>
+            <g id="zones"></g>
+            <g id="hots"></g>
+          </svg>
+          <div class="chips" id="regionChips" aria-label="Body areas"></div>
+        </div>
+        <div class="info" id="info" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="band">
+        <div style="display:grid;gap:8px;max-width:560px"><h2>Ready for a plan made for you?</h2><p>Your first visit includes a full assessment, a clear explanation of what's going on, and exercises you can start the same day.</p></div>
+        <a class="btn btn-primary" href="#book" style="background:#fff;color:var(--tape-blue)">Book Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="page section" id="page-testimonials" data-page="testimonials" hidden>
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Testimonials</span><h2>Patient stories</h2></div>
+    <div class="notice"><span class="tag">Placeholder</span> These are sample testimonials for layout only. Swap in real patient reviews (with permission) before launch.</div>
+    <div class="filter-row" id="tFilter" role="group" aria-label="Filter stories"></div>
+    <div class="quotes" id="quotes"></div>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section class="page section" id="page-book" data-page="book" hidden>
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Book Us</span><h2>Request an appointment</h2><p class="lede">Pick a visit type and a time that works. This is a demo form, so no request is sent yet.</p></div>
+    <div class="book">
+      <div id="bookArea">
+        <form class="panel-form" id="bookForm" novalidate>
+          <div class="field"><span class="legend">Visit type</span>
+            <div class="services" id="services"></div></div>
+          <div class="row2">
+            <div class="field"><label for="bDate">Date</label><input type="date" id="bDate" required></div>
+            <div class="field"><label for="bMode">Where</label><select id="bMode"><option>In clinic</option><option>Virtual visit</option><option>Home visit (placeholder)</option></select></div>
+          </div>
+          <div class="field"><span class="legend">Time</span><div class="slots" id="slots"></div></div>
+          <div class="row2">
+            <div class="field"><label for="bName">Full name</label><input id="bName" autocomplete="name" required></div>
+            <div class="field"><label for="bPhone">Phone</label><input id="bPhone" type="tel" autocomplete="tel"></div>
+          </div>
+          <div class="field"><label for="bEmail">Email</label><input id="bEmail" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="bNotes">What brings you in?</label><textarea id="bNotes" placeholder="For example: knee pain when climbing stairs for 3 months"></textarea></div>
+          <p class="err" id="bErr" hidden></p>
+          <button class="btn btn-primary" type="submit">Request appointment</button>
+        </form>
+      </div>
+      <aside class="side">
+        <figure class="photo" data-src="images/room.jpg" data-alt="Treatment room with a table and resistance bands"><div class="ph"><div><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><rect x="8" y="30" width="48" height="10" rx="3"/><path d="M14 40v12M50 40v12"/></svg><span>Photo · treatment room</span></div></div></figure>
+        <div class="card"><h3>Clinic hours</h3>
+          <table class="hours"><tbody>
+            <tr><td>Mon to Thu</td><td>7:00 to 19:00</td></tr>
+            <tr><td>Friday</td><td>7:00 to 15:00</td></tr>
+            <tr><td>Saturday</td><td>8:00 to 12:00</td></tr>
+            <tr><td>Sunday</td><td>Closed</td></tr>
+          </tbody></table>
+          <p class="disclaimer">Hours, address and phone are placeholders.</p>
+        </div>
+        <div class="card"><h3>Contact</h3><p>123 Placeholder Ave, Suite 4<br>(555) 010-0199<br>hello@ishaanspt.example</p></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIALS -->
+<section class="page section" id="page-socials" data-page="socials" hidden>
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Socials</span><h2>Follow along on Instagram</h2><p class="lede">Exercise demos, pelvic health tips and clinic life from Dr. Kapoor.</p></div>
+    <div class="ig-card">
+      <div class="ig-ava"><div>IK</div></div>
+      <div class="ig-meta">
+        <span class="handle">@ishaankapoordpt</span>
+        <span>Ishaan Kapoor, PT, DPT</span>
+        <div class="ig-counts"><span>Posts and reels below link to the profile</span></div>
+      </div>
+      <a class="btn btn-primary" href="https://www.instagram.com/ishaankapoordpt?rpxt=MXFpcWFxdzhyMDg4dw==" target="_blank" rel="noopener">Open Instagram</a>
+    </div>
+    <div class="notice"><span class="tag">Placeholder</span> Instagram blocks automatic copying, so these tiles are stand-ins. Each one opens the profile. Replace them with real post links to embed his videos.</div>
+    <div class="ig-grid" id="igGrid"></div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section class="page section" id="page-certifications" data-page="certifications" hidden>
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Certifications</span><h2>Training and credentials</h2><p class="lede">Skilled Physical Therapist adept in patient assessment and neuro rehabilitation, with exceptional diagnostic testing abilities and a compassionate approach to patient care.</p></div>
+    <div class="notice"><span class="tag">Placeholder</span> Schools, license numbers and dates below are placeholders until real details are provided.</div>
+    <div class="certs" id="certs"></div>
+    <div class="skills" id="skills"></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="page section" id="page-faq" data-page="faq" hidden>
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">FAQs</span><h2>Questions patients ask</h2></div>
+    <div class="faq-tools"><label for="faqSearch" class="legend" style="align-self:center">Search</label><input id="faqSearch" placeholder="Try insurance, pelvic, first visit"></div>
+    <div class="faq" id="faqList"></div>
+    <p class="disclaimer" style="margin-top:18px">Still unsure? Ask the clinic assistant in the corner, or <a href="#book">book a visit</a>.</p>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="page section" id="page-blog" data-page="blog" hidden>
+  <div class="wrap" id="blogList">
+    <div class="section-head"><span class="eyebrow">Blog</span><h2>Notes from the clinic</h2><p class="lede">Practical advice on pelvic health, recovery and moving well, written for patients.</p></div>
+    <div class="notice"><span class="tag">Placeholder</span> These are sample articles to show the layout. Replace them with Dr. Kapoor's own posts.</div>
+    <div class="filter-row" id="blogFilter" role="group" aria-label="Filter articles"></div>
+    <div id="blogFeature"></div>
+    <div class="post-grid" id="postGrid"></div>
+  </div>
+  <div class="wrap" id="blogArticle" hidden></div>
+</section>
+</main>
+
+<footer class="site"><div class="wrap"><span>© Ishaans PT Clinic · Demo site with placeholder content</span><span>Educational information only, not medical advice.</span></div></footer>
+
+<button class="chat-fab" id="chatFab" aria-expanded="false" aria-controls="chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 5h16v11H9l-5 4z"/></svg>Ask the PT assistant</button>
+<div class="chat" id="chat" role="dialog" aria-label="PT assistant chat" hidden>
+  <div class="chat-head"><div><b>Clinic Assistant</b><small>Answers common PT questions</small></div><button id="chatClose" aria-label="Close chat">×</button></div>
+  <div class="chat-log" id="chatLog"></div>
+  <div class="chat-quick" id="chatQuick"></div>
+  <form class="chat-form" id="chatForm"><input id="chatInput" placeholder="Ask about pain, visits, insurance…" autocomplete="off"><button type="submit">Send</button></form>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+
+/* ---------- photos: load stock images, keep the designed frame if they fail ---------- */
+document.querySelectorAll('figure.photo[data-src]').forEach(f=>{
+  const img=new Image(); img.alt=f.dataset.alt||''; img.loading='lazy';
+  img.onload=()=>f.prepend(img); img.src=f.dataset.src;
+});
+
+/* ---------- routing ---------- */
+const pages=[...document.querySelectorAll('.page')];
+const navLinks=[...document.querySelectorAll('#navLinks a')];
+function route(){
+  let h=(location.hash||'#home').slice(1);
+  let target=h;
+  if(h==='explore'){target='home';}
+  if(h.startsWith('post-')){target='blog';}
+  if(target==='blog') showBlog(h.startsWith('post-')?h.slice(5):null);
+  if(!pages.some(p=>p.dataset.page===target)) target='home';
+  pages.forEach(p=>p.hidden=p.dataset.page!==target);
+  navLinks.forEach(a=>{ if(a.getAttribute('href')==='#'+target) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');});
+  $('#navLinks').classList.remove('open'); $('#menuBtn').setAttribute('aria-expanded','false');
+  if(h==='explore'){ document.getElementById('explore').scrollIntoView({behavior:'smooth'}); }
+  else window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+$('#menuBtn').onclick=()=>{const o=$('#navLinks').classList.toggle('open');$('#menuBtn').setAttribute('aria-expanded',o);};
+
+/* ---------- body map data ---------- */
+const R={
+ neck:{name:'Neck',view:'both',x:150,y:104,zone:'M134 92h32v30h-32z',tag:'Cervical spine, C1 to C7',
+  about:'Seven small vertebrae carry the weight of your head, about 10 to 12 pounds, and let you look up, down and around.',
+  conditions:['Tech neck and forward head posture','Whiplash','Pinched nerve (radiculopathy)','Tension headaches'],
+  rom:[['Flexion',45],['Extension',45],['Rotation',80]],
+  ex:{name:'Chin tucks',steps:['Sit tall and look straight ahead','Glide your chin straight back, making a gentle double chin','Hold 5 seconds, relax. Repeat 10 times']},
+  pt:'Posture retraining, deep neck flexor strengthening, joint mobilization and ergonomic changes for your desk.'},
+ shoulder:{name:'Shoulder',view:'both',x:200,y:134,zone:'M178 112a26 26 0 1 0 44 30 26 26 0 1 0-44-30z',tag:'Glenohumeral joint and rotator cuff',
+  about:'A ball-and-socket joint with the widest range of motion in the body, held steady by four rotator cuff muscles.',
+  conditions:['Rotator cuff tendinopathy or tear','Frozen shoulder','Impingement','Dislocation and instability'],
+  rom:[['Flexion',180],['Abduction',180],['External rotation',90]],
+  ex:{name:'Pendulum swings',steps:['Lean forward with your good hand on a table','Let the sore arm hang loose','Draw small circles for 30 seconds each direction']},
+  pt:'Restores motion first, then rebuilds rotator cuff and shoulder blade strength so the joint stays stable overhead.'},
+ elbow:{name:'Elbow',view:'both',x:217,y:232,zone:'M200 214h34v36h-34z',tag:'Humeroulnar joint',
+  about:'A hinge joint that bends and straightens the arm, plus a pivot that turns the palm up and down.',
+  conditions:['Tennis elbow (lateral epicondylalgia)','Golfer’s elbow','Post-fracture stiffness','Ulnar nerve irritation'],
+  rom:[['Flexion',150],['Supination',80],['Pronation',80]],
+  ex:{name:'Wrist extensor stretch',steps:['Straighten your arm in front, palm down','Use the other hand to gently bend the wrist down','Hold 30 seconds, 3 times']},
+  pt:'Load management, progressive tendon strengthening, and grip and technique coaching for work or sport.'},
+ wrist:{name:'Wrist and hand',view:'both',x:229,y:330,zone:'M214 312a18 18 0 1 0 32 26 18 18 0 1 0-32-26z',tag:'27 bones in each hand',
+  about:'Small bones and tendons work together for grip, pinch and the fine motor control used when typing or writing.',
+  conditions:['Carpal tunnel syndrome','Sprains and fractures','De Quervain’s tenosynovitis','Arthritis'],
+  rom:[['Flexion',80],['Extension',70],['Radial deviation',20]],
+  ex:{name:'Tendon glides',steps:['Start with fingers straight','Move through hook fist, full fist, then flat fist','Hold each 3 seconds, 10 rounds']},
+  pt:'Nerve and tendon gliding, splinting advice, and strength and dexterity training.'},
+ midback:{name:'Mid back',view:'back',x:150,y:172,zone:'M126 136h48v70h-48z',tag:'Thoracic spine, T1 to T12',
+  about:'Twelve vertebrae that connect to your ribs. This area should rotate well; when it stiffens, the neck and low back often pay for it.',
+  conditions:['Postural pain','Rib dysfunction','Scoliosis','Stiffness from desk work'],
+  rom:[['Rotation',35],['Flexion',40],['Extension',25]],
+  ex:{name:'Open book rotation',steps:['Lie on your side, knees bent, arms out in front','Open the top arm across your body to the floor behind you','Breathe out as you rotate. 10 each side']},
+  pt:'Mobility work and strengthening of the muscles between the shoulder blades, plus breathing mechanics.'},
+ lowback:{name:'Lower back and core',view:'both',x:150,y:252,zone:'M118 218h64v62h-64z',tag:'Lumbar spine, L1 to L5',
+  about:'The five largest vertebrae carry most of your upper body weight. Your deep core muscles act like a natural brace around them.',
+  conditions:['Nonspecific low back pain','Herniated disc','Sciatica','Spinal stenosis'],
+  rom:[['Flexion',60],['Extension',25],['Side bend',25]],
+  ex:{name:'Pelvic tilts',steps:['Lie on your back with knees bent','Gently flatten your low back into the floor','Hold 5 seconds, release. Repeat 10 times']},
+  pt:'Education about pain, graded movement, core and hip strength, and a plan to get you back to lifting, sitting or running.'},
+ hip:{name:'Hip',view:'both',x:126,y:304,zone:'M100 284a26 26 0 1 0 50 16 26 26 0 1 0-50-16z',tag:'Femoroacetabular joint',
+  about:'A deep ball-and-socket joint that transfers force between your legs and spine every time you walk, climb or stand up.',
+  conditions:['Hip osteoarthritis','Labral tear','Bursitis and tendinopathy','Recovery after hip replacement'],
+  rom:[['Flexion',120],['Abduction',45],['Internal rotation',45]],
+  ex:{name:'Glute bridge',steps:['Lie on your back, knees bent, feet hip width','Press through your heels to lift your hips','Hold 3 seconds at the top. 2 sets of 10']},
+  pt:'Strengthening the glutes and deep hip rotators, mobility work and gait retraining.'},
+ pelvic:{name:'Pelvic floor',view:'front',x:150,y:314,zone:'M128 300q22 30 44 0z',tag:'Dr. Kapoor’s specialty',
+  about:'A hammock of muscles at the base of your pelvis that supports the bladder, bowel and reproductive organs, and works with your breathing and core.',
+  conditions:['Urinary leakage with cough, sneeze or exercise','Pelvic pain or pain with intimacy','Pregnancy and postpartum recovery','Pelvic organ prolapse','Prostate surgery recovery'],
+  rom:[['Typical bathroom visits per day',8],['Hours between voids, typical max',4]],romUnit:'count',
+  ex:{name:'Breath-coordinated pelvic floor lift',steps:['Breathe in and let your belly and pelvic floor relax','Breathe out and gently lift the pelvic floor, as if stopping gas','Hold 5 seconds, relax fully for 5 seconds. Repeat 10 times']},
+  pt:'A private, one-on-one assessment, then muscle retraining that includes relaxation as well as strengthening, with bladder habits and breathing coaching.'},
+ knee:{name:'Knee',view:'both',x:176,y:430,zone:'M156 410h40v40h-40z',tag:'Tibiofemoral joint',
+  about:'The largest joint in the body. Ligaments like the ACL and the meniscus cushions keep it stable while it bends and straightens.',
+  conditions:['ACL and meniscus injuries','Patellofemoral (runner’s) knee','Osteoarthritis','Recovery after knee replacement'],
+  rom:[['Flexion',135],['Extension',0]],
+  ex:{name:'Quad sets',steps:['Sit with your leg straight out','Tighten the thigh to press the back of the knee down','Hold 5 seconds. Repeat 10 to 15 times']},
+  pt:'Restoring full extension early, then progressive strength, balance and return to sport testing.'},
+ ankle:{name:'Ankle and foot',view:'both',x:182,y:552,zone:'M160 540h46v36h-46z',tag:'26 bones, 33 joints',
+  about:'Your ankle and foot absorb up to several times your body weight with every running step and adapt to every surface you walk on.',
+  conditions:['Ankle sprains','Plantar fasciitis','Achilles tendinopathy','Balance problems and fall risk'],
+  rom:[['Dorsiflexion',20],['Plantarflexion',50],['Inversion',35]],
+  ex:{name:'Ankle alphabet',steps:['Sit with your foot off the floor','Trace each letter of the alphabet with your big toe','Go slowly, 1 to 2 rounds']},
+  pt:'Balance training, calf and foot strength, footwear guidance and a safe plan back to walking or running.'}
+};
+let view='front', current='pelvic';
+const svgNS='http://www.w3.org/2000/svg';
+function drawHots(){
+  const hots=$('#hots'), zones=$('#zones'); hots.innerHTML=''; zones.innerHTML='';
+  $('#backLines').setAttribute('display',view==='back'?'inline':'none');
+  Object.entries(R).forEach(([k,r])=>{
+    if(r.view!=='both' && r.view!==view) return;
+    const z=document.createElementNS(svgNS,'path'); z.setAttribute('d',r.zone); z.setAttribute('class','zone'+(k===current?' on':'')); z.id='z-'+k; zones.appendChild(z);
+    const g=document.createElementNS(svgNS,'g'); g.setAttribute('class','hot'+(k===current?' active':'')); g.setAttribute('tabindex','0'); g.setAttribute('role','button'); g.setAttribute('aria-label',r.name);
+    g.innerHTML=`<circle class="ring" cx="${r.x}" cy="${r.y}" r="9"/><circle class="dot" cx="${r.x}" cy="${r.y}" r="9"/>`;
+    g.addEventListener('click',()=>select(k));
+    g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(k);}});
+    hots.appendChild(g);
+  });
+  const chips=$('#regionChips'); chips.innerHTML='';
+  Object.entries(R).forEach(([k,r])=>{
+    if(r.view!=='both' && r.view!==view) return;
+    const b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=r.name; b.setAttribute('aria-pressed',k===current);
+    b.onclick=()=>select(k); chips.appendChild(b);
+  });
+}
+function arcPath(deg){ // semicircle gauge 0..180
+  const cx=130,cy=130,r=100; const a=Math.PI*(1-Math.min(deg,180)/180);
+  return `M${cx-r} ${cy} A${r} ${r} 0 0 1 ${cx+r*Math.cos(a)} ${cy-r*Math.sin(a)}`;
+}
+function renderInfo(){
+  const r=R[current]; const isCount=r.romUnit==='count';
+  const romBlock=isCount?`
+    <div class="panel"><h4>Healthy bladder habits</h4><ul>${r.rom.map(([n,v])=>`<li><b style="font-family:var(--mono)">${v}</b> ${n.toLowerCase()}</li>`).join('')}</ul><p class="disclaimer">General adult guidance. Your needs may differ.</p></div>`
+   :`<div class="panel rom"><h4>Typical range of motion</h4>
+      <label for="romSel" class="disclaimer">Movement</label>
+      <select id="romSel">${r.rom.map(([n,v],i)=>`<option value="${i}">${n} · 0 to ${v}°</option>`).join('')}</select>
+      <svg viewBox="0 0 260 150" aria-hidden="true">
+        <path class="arc-bg" d="${arcPath(180)}" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path class="arc-fg" id="arcFg" d="${arcPath(r.rom[0][1])}" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <line class="needle" id="needle" x1="130" y1="130" x2="30" y2="130"/>
+        <circle cx="130" cy="130" r="7" fill="var(--tape-pink)"/>
+        <text class="deg" id="degTxt" x="130" y="100" text-anchor="middle">0°</text>
+        <text class="lbl" x="22" y="148">0°</text><text class="lbl" x="214" y="148">180°</text>
+      </svg>
+      <label for="romRange" class="disclaimer">Drag to move through the range</label>
+      <input type="range" id="romRange" min="0" max="${r.rom[0][1]}" value="0">
+    </div>`;
+  $('#info').innerHTML=`
+    <div style="display:grid;gap:8px"><span class="tag">${r.tag}</span><h3>${r.name}</h3><p class="lede">${r.about}</p></div>
+    <div class="info-grid">
+      <div class="panel"><h4>Common conditions we treat</h4><ul>${r.conditions.map(c=>`<li>${c}</li>`).join('')}</ul></div>
+      ${romBlock}
+      <div class="panel"><h4>Try this: ${r.ex.name}</h4><ol>${r.ex.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div>
+      <div class="panel"><h4>How PT helps</h4><p>${r.pt}</p><a href="#book" style="font-weight:600">Book a ${r.name.toLowerCase()} evaluation</a></div>
+    </div>
+    <p class="disclaimer">Educational information only. Stop any exercise that causes sharp pain, and see a clinician for numbness, weakness, or symptoms after a fall.</p>`;
+  if(!isCount){
+    const sel=$('#romSel'), rng=$('#romRange');
+    const setNeedle=v=>{const a=Math.PI*(1-v/180);$('#needle').setAttribute('x2',130+90*Math.cos(a)); $('#needle').setAttribute('y2',130-90*Math.sin(a)); $('#degTxt').textContent=v+'°';};
+    sel.onchange=()=>{const m=r.rom[sel.value][1]; rng.max=m; $('#arcFg').setAttribute('d',arcPath(m)); animateTo(m);};
+    rng.oninput=()=>setNeedle(+rng.value);
+    function animateTo(m){ if(m===0){rng.value=0;setNeedle(0);return;} let v=0; const step=()=>{v=Math.min(m,v+Math.max(2,m/30)); rng.value=v; setNeedle(Math.round(v)); if(v<m) requestAnimationFrame(step);}; step(); }
+    animateTo(r.rom[0][1]);
+  }
+}
+function select(k){current=k; if(R[k].view!=='both'&&R[k].view!==view){setView(R[k].view);return;} drawHots(); renderInfo();}
+function setView(v){view=v; $('#viewFront').setAttribute('aria-pressed',v==='front'); $('#viewBack').setAttribute('aria-pressed',v==='back');
+  if(R[current].view!=='both'&&R[current].view!==v) current=v==='back'?'midback':'pelvic'; drawHots(); renderInfo();}
+$('#viewFront').onclick=()=>setView('front'); $('#viewBack').onclick=()=>setView('back');
+drawHots(); renderInfo();
+
+/* ---------- testimonials ---------- */
+const T=[
+ {q:'After my second baby I thought leaking when I laughed was just my life now. Six weeks of pelvic floor therapy changed that.',n:'Sample Patient A.',t:'Pelvic health',c:'var(--tape-pink)'},
+ {q:'He explained my back pain in a way that finally made sense, and I was back to lifting with my kids in a month.',n:'Sample Patient B.',t:'Back pain',c:'var(--tape-blue)'},
+ {q:'Following my stroke, every session had a clear goal. I walked into my daughter’s wedding without a cane.',n:'Sample Patient C.',t:'Neuro rehab',c:'var(--ink)'},
+ {q:'My ACL rehab plan was built around my soccer season. The return to sport testing gave me real confidence.',n:'Sample Patient D.',t:'Sports',c:'var(--tape-blue)'},
+ {q:'Patient, kind and incredibly thorough. The first evaluation alone was more detailed than anything I had before.',n:'Sample Patient E.',t:'Back pain',c:'var(--tape-pink)'},
+ {q:'Pelvic pain made me avoid so many things. I felt safe and listened to from the very first appointment.',n:'Sample Patient F.',t:'Pelvic health',c:'var(--ink)'}
+];
+let tf='All';
+function drawT(){
+  const tags=['All',...new Set(T.map(x=>x.t))];
+  $('#tFilter').innerHTML=tags.map(t=>`<button type="button" class="chip" aria-pressed="${t===tf}" data-t="${t}">${t}</button>`).join('');
+  $('#tFilter').querySelectorAll('button').forEach(b=>b.onclick=()=>{tf=b.dataset.t;drawT();});
+  $('#quotes').innerHTML=T.filter(x=>tf==='All'||x.t===tf).map(x=>`
+    <article class="quote"><span class="stars" aria-label="5 out of 5">★★★★★</span><blockquote>“${x.q}”</blockquote>
+    <footer><span class="avatar" style="background:${x.c}">${x.n.slice(-2,-1)}</span><span><b style="color:var(--ink)">${x.n}</b><br>${x.t} · placeholder</span></footer></article>`).join('');
+}
+drawT();
+
+/* ---------- booking ---------- */
+const S=[['eval','Initial evaluation','60 min'],['follow','Follow-up session','45 min'],['pelvic','Pelvic floor evaluation','60 min, private room'],['neuro','Neuro rehab session','60 min'],['virtual','Virtual consult','30 min']];
+$('#services').innerHTML=S.map(([v,n,d],i)=>`<div class="svc"><input type="radio" name="svc" id="svc-${v}" value="${n}" ${i===0?'checked':''}><label for="svc-${v}"><b>${n}</b><small>${d}</small></label></div>`).join('');
+const d=new Date(); do{d.setDate(d.getDate()+1);}while(d.getDay()===0);
+const iso=x=>x.toISOString().slice(0,10);
+$('#bDate').value=iso(d); $('#bDate').min=iso(new Date());
+let slot=null;
+function drawSlots(){
+  const day=new Date($('#bDate').value+'T12:00').getDay();
+  const base=day===6?['08:00','09:00','10:00','11:00']:day===5?['07:00','08:30','10:00','11:30','13:00','14:00']:['07:00','08:30','10:00','11:30','13:00','14:30','16:00','17:30'];
+  const seed=($('#bDate').value||'').split('-').reduce((a,b)=>a+ +b,0);
+  slot=null;
+  if(day===0){$('#slots').innerHTML='<span class="disclaimer">Closed on Sundays. Pick another day.</span>';return;}
+  $('#slots').innerHTML=base.map((t,i)=>`<button type="button" class="slot" aria-pressed="false" ${((i+seed)%4===0)?'disabled title="Booked"':''}>${t}</button>`).join('');
+  $('#slots').querySelectorAll('.slot:not(:disabled)').forEach(b=>b.onclick=()=>{$('#slots').querySelectorAll('.slot').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');slot=b.textContent;});
+}
+$('#bDate').onchange=drawSlots; drawSlots();
+$('#bookForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=$('#bName').value.trim(), email=$('#bEmail').value.trim();
+  let msg='';
+  if(!slot) msg='Pick a time slot.'; if(!name) msg='Add your full name.'; if(!/^\S+@\S+\.\S+$/.test(email)) msg=msg||'Add a valid email so the clinic can confirm.';
+  if(!name && !slot) msg='Add your name and pick a time slot.';
+  if(msg){$('#bErr').textContent=msg;$('#bErr').hidden=false;return;}
+  const svc=document.querySelector('input[name=svc]:checked').value;
+  const when=new Date($('#bDate').value+'T12:00').toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  $('#bookArea').innerHTML=`<div class="confirm"><span class="tag">Demo</span><h3>Request saved, ${name.split(' ')[0]}</h3>
+   <p><b>${svc}</b> · ${when} at ${slot} · ${$('#bMode').value}</p>
+   <p class="disclaimer">This demo doesn't send anything yet. Once the clinic connects scheduling, requests will go straight to Dr. Kapoor and you'll get an email confirmation.</p>
+   <button class="btn btn-ghost" type="button" id="again">Make another request</button></div>`;
+  $('#again').onclick=()=>location.reload();
+});
+
+/* ---------- socials ---------- */
+const IG='https://www.instagram.com/ishaankapoordpt?rpxt=MXFpcWFxdzhyMDg4dw==';
+const P=[['Reel','3 moves for desk-worker neck pain'],['Reel','Pelvic floor: it’s not just Kegels'],['Post','What a DPT evaluation actually looks like'],['Reel','Balance drill for neuro patients'],['Post','Postpartum return to running checklist'],['Reel','Knee pain on stairs? Try this']];
+$('#igGrid').innerHTML=P.map(([k,c],i)=>`<a class="post ${i%2?'alt':''}" href="${IG}" target="_blank" rel="noopener" aria-label="${k}: ${c} (opens Instagram)">
+  <span class="kind">${k}</span>
+  <span class="play"><span>${k==='Reel'?'<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>':'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="4"/></svg>'}</span></span>
+  <span class="cap">${c}</span></a>`).join('');
+
+/* ---------- certifications ---------- */
+const C=[
+ ['DPT','Doctor of Physical Therapy','Placeholder University','Degree','20XX'],
+ ['PT','Licensed Physical Therapist','State Board of Physical Therapy','License no.','PT-000000'],
+ ['PF','Pelvic Health Certification','Placeholder pelvic health institute','Status','Placeholder'],
+ ['NR','Neurologic Rehabilitation Training','Placeholder residency or course','Focus','Stroke, balance, gait'],
+ ['CI','Clinical Instructor Credential','Placeholder association','Role','Mentoring clinical staff'],
+ ['BLS','Basic Life Support (CPR)','Placeholder heart association','Renewal','Every 2 years']
+];
+$('#certs').innerHTML=C.map(([s,n,o,k,v])=>`<article class="cert"><span class="seal">${s}</span><h3>${n}</h3><dl><dt>Issuer</dt><dd>${o}</dd><dt>${k}</dt><dd>${v}</dd></dl><span class="tag">Placeholder</span></article>`).join('');
+$('#skills').innerHTML=['Patient assessment','Neuro rehabilitation','Customized treatment plans','Functional mobility','Diagnostic testing','Clinical mentoring','Pelvic floor therapy','Compassionate care'].map(s=>`<span class="chip" style="cursor:default">${s}</span>`).join('');
+
+/* ---------- FAQ ---------- */
+const F=[
+ ['Do I need a referral from a doctor?','In many states you can see a physical therapist directly without a referral for a limited time. Some insurance plans still require one. We’ll check for you when you book. (Placeholder policy.)'],
+ ['What happens at my first visit?','A 60 minute evaluation: we talk about your history and goals, test strength, range of motion and movement, explain what we find, and start a home exercise plan that same day.'],
+ ['What is pelvic floor therapy?','Treatment for the muscles that support your bladder, bowel and pelvic organs. It helps with leakage, pelvic pain, pregnancy and postpartum recovery, and recovery after prostate surgery. Visits are private and one-on-one, and you are always in control of what the assessment includes.'],
+ ['Do you take insurance?','Placeholder: the clinic will list accepted plans here. Out-of-network superbills and self-pay rates will also be available.'],
+ ['How many sessions will I need?','It depends on the condition and your goals. Many patients need 6 to 12 visits. You’ll get an estimate after your evaluation.'],
+ ['What should I wear?','Comfortable clothes you can move in. Shorts for knee or hip problems and a tank top for shoulder or neck problems help.'],
+ ['Do you offer virtual visits?','Yes, for consults, exercise progressions and some follow-ups. Pick "Virtual visit" on the Book Us page.'],
+ ['Is physical therapy painful?','Some exercises can feel like effort or mild soreness, but treatment should never feel like sharp pain. Tell your therapist and the plan gets adjusted.'],
+ ['What is neuro rehab?','Therapy for people with conditions of the brain, spinal cord or nerves, such as stroke, Parkinson’s, MS or concussion, focused on balance, walking, strength and daily function.']
+];
+function drawF(q=''){ q=q.toLowerCase();
+  const list=F.filter(([a,b])=>(a+b).toLowerCase().includes(q));
+  $('#faqList').innerHTML=list.length?list.map(([a,b],i)=>`<details ${i===0&&!q?'open':''}><summary>${a}</summary><p>${b}</p></details>`).join(''):'<p class="disclaimer">No matching questions. Try the assistant in the corner.</p>';
+}
+$('#faqSearch').oninput=e=>drawF(e.target.value); drawF();
+
+/* ---------- blog ---------- */
+const BLOG=[
+ {id:'pelvic-floor-relax',cat:'Pelvic health',img:'images/pelvic.jpg',alt:'Therapist coaching a patient through a breathing exercise',date:'Placeholder date',read:'5 min read',
+  title:'Kegels aren\u2019t the whole story: why your pelvic floor also needs to relax',
+  excerpt:'Many people with leakage or pelvic pain have muscles that are too tight, not too weak. Here is how breathing changes the picture.',
+  body:`<p>When most people hear "pelvic floor exercises," they think of Kegels: squeeze and hold. Strength matters, but a muscle that can\u2019t fully let go can\u2019t contract well either.</p>
+  <h2>Tight is not the same as strong</h2><p>A pelvic floor that stays switched on all day can contribute to pelvic pain, urgency, constipation and pain with intimacy. In those cases more squeezing can make symptoms worse.</p>
+  <h2>Start with your breath</h2><p>Your diaphragm and pelvic floor move together. As you breathe in, both descend. As you breathe out, both gently lift.</p>
+  <ol><li>Lie on your back with knees bent and one hand on your belly.</li><li>Breathe in slowly through your nose and let your belly, ribs and pelvic floor soften and widen.</li><li>Breathe out and let everything return without pushing.</li><li>Repeat for 2 to 3 minutes, once or twice a day.</li></ol>
+  <blockquote>The goal is a pelvic floor that can do both: lift when you need it and let go when you don\u2019t.</blockquote>
+  <h2>When to get help</h2><p>Leakage, pelvic pain, heaviness or pain with intimacy are common, but they are not something you have to live with. A pelvic floor assessment shows whether you need strengthening, relaxation, or both.</p>`},
+ {id:'balance-after-stroke',cat:'Neuro rehab',img:'images/neuro.jpg',alt:'Patient practicing walking between parallel bars with a therapist',date:'Placeholder date',read:'4 min read',
+  title:'Why balance training matters so much after a stroke',
+  excerpt:'Falls are one of the biggest risks in the first year after a stroke. Targeted balance work lowers that risk and builds confidence.',
+  body:`<p>After a stroke, the brain has to relearn how to coordinate muscles, sense where the body is, and react quickly when you start to tip. Balance training gives it the repetition it needs.</p>
+  <h2>What a session looks like</h2><ul><li>Standing and weight-shifting practice with support nearby</li><li>Walking practice, often starting between parallel bars</li><li>Stepping, turning and reaching tasks that copy real life</li><li>Strength work for the hips and ankles</li></ul>
+  <h2>Small changes add up</h2><p>Progress is measured with standard tests, such as how long you can stand on one foot or how fast you walk 10 meters. Seeing those numbers improve is a big motivator.</p>
+  <p>Always practice balance with a stable surface within reach, and follow the plan your therapist sets for you.</p>`},
+ {id:'desk-neck',cat:'Everyday pain',img:'images/ortho.jpg',alt:'Patient doing a resistance band shoulder exercise',date:'Placeholder date',read:'3 min read',
+  title:'Desk neck: three fixes you can do between meetings',
+  excerpt:'Neck and upper back stiffness from screen time responds well to short, frequent movement breaks.',
+  body:`<p>Your head weighs about 10 to 12 pounds. When it drifts forward toward a screen, the muscles at the back of your neck work harder to hold it up. Over a workday that adds up.</p>
+  <h2>1. Chin tucks</h2><p>Sit tall and glide your chin straight back, as if making a double chin. Hold 5 seconds, 10 times.</p>
+  <h2>2. Shoulder blade squeezes</h2><p>Draw your shoulder blades back and down. Hold 5 seconds, 10 times. A resistance band makes this harder as you get stronger.</p>
+  <h2>3. Look away and move</h2><p>Every 30 minutes, stand up, look at something far away, and turn your head slowly side to side.</p>
+  <p>If neck pain comes with numbness, tingling or weakness in your arm, get it checked by a clinician.</p>`},
+ {id:'first-visit',cat:'Clinic',img:'images/room.jpg',alt:'Treatment room with a table and resistance bands',date:'Placeholder date',read:'3 min read',
+  title:'What to expect at your first physical therapy evaluation',
+  excerpt:'Your first visit is mostly about understanding what\u2019s going on. Here\u2019s how the hour is spent.',
+  body:`<p>A first evaluation lasts about 60 minutes. You will leave with a clear explanation and a plan, not just a list of exercises.</p>
+  <h2>How the hour is spent</h2><ol><li><b>Your story.</b> When it started, what makes it better or worse, and what you want to get back to.</li><li><b>Testing.</b> Range of motion, strength, balance and special tests for the area involved.</li><li><b>Explanation.</b> What we found, in plain language, and how long recovery usually takes.</li><li><b>First treatment.</b> Hands-on care if helpful, and two or three exercises to start at home.</li></ol>
+  <h2>What to bring</h2><ul><li>Comfortable clothes you can move in</li><li>Your insurance card and photo ID</li><li>Any imaging reports or surgical notes</li></ul>
+  <p>Ready to start? <a href="#book">Book an evaluation</a>.</p>`}
+];
+let bf='All';
+function postCard(p){return `<a class="post-card" href="#post-${p.id}"><figure class="photo"><img src="${p.img}" alt="${p.alt}"></figure><div class="meta"><b>${p.cat}</b><span>${p.read}</span></div><h3>${p.title}</h3><p class="excerpt">${p.excerpt}</p></a>`;}
+function drawBlog(){
+  const cats=['All',...new Set(BLOG.map(b=>b.cat))];
+  $('#blogFilter').innerHTML=cats.map(c=>`<button type="button" class="chip" aria-pressed="${c===bf}" data-c="${c}">${c}</button>`).join('');
+  $('#blogFilter').querySelectorAll('button').forEach(b=>b.onclick=()=>{bf=b.dataset.c;drawBlog();});
+  const list=BLOG.filter(b=>bf==='All'||b.cat===bf); const [f,...rest]=list;
+  $('#blogFeature').innerHTML=f?`<a class="blog-feature" href="#post-${f.id}"><figure class="photo" style="aspect-ratio:16/10"><img src="${f.img}" alt="${f.alt}"></figure><div style="display:grid;gap:12px"><div class="meta"><b>${f.cat}</b><span>${f.read}</span></div><h3>${f.title}</h3><p class="excerpt">${f.excerpt}</p><span style="font-weight:600;color:var(--tape-blue)">Read article</span></div></a>`:'';
+  $('#postGrid').innerHTML=rest.map(postCard).join('');
+}
+function showBlog(id){
+  const p=BLOG.find(b=>b.id===id);
+  $('#blogList').hidden=!!p; $('#blogArticle').hidden=!p;
+  if(!p){drawBlog();return;}
+  const more=BLOG.filter(b=>b.id!==p.id).slice(0,2);
+  $('#blogArticle').innerHTML=`<article class="article">
+    <a class="back-link" href="#blog">All articles</a>
+    <div class="meta"><b>${p.cat}</b><span>${p.read}</span><span>${p.date}</span></div>
+    <h1>${p.title}</h1>
+    <div class="byline"><span><b>Dr. Ishaan Kapoor, PT, DPT</b><br>Ishaans PT Clinic</span></div>
+    <figure class="photo"><img src="${p.img}" alt="${p.alt}"></figure>
+    <div class="article-body">${p.body}</div>
+    <p class="disclaimer">Educational information only, not medical advice. Sample article for layout.</p>
+    <div class="section-head" style="margin:20px 0 0"><span class="eyebrow">Keep reading</span></div>
+    <div class="post-grid">${more.map(postCard).join('')}</div>
+  </article>`;
+}
+window.showBlog=showBlog;
+
+/* ---------- chatbot ---------- */
+const KB=[
+ {k:['hi','hello','hey'],a:'Hi! I can answer questions about physical therapy, the clinic, and booking. What’s going on?'},
+ {k:['book','appointment','schedule','availability','available'],a:'You can request a time on the <a href="#book">Book Us</a> page. Initial evaluations are 60 minutes.'},
+ {k:['insurance','cost','price','pay','copay','self-pay'],a:'Insurance details are still being added. The clinic plans to offer insurance billing, superbills and self-pay rates. See the <a href="#faq">FAQs</a>.'},
+ {k:['referral','prescription'],a:'In many states you can start PT without a referral. Some insurance plans require one, so the clinic will check when you book.'},
+ {k:['first visit','evaluation','expect','first appointment'],a:'Your first visit is a 60 minute evaluation: history, movement and strength testing, a clear explanation, and exercises you can start that day.'},
+ {k:['pelvic','leak','incontinence','postpartum','pregnan','prolapse','bladder'],a:'Pelvic floor therapy is Dr. Kapoor’s specialty. It helps with leakage, pelvic pain and pregnancy or postpartum recovery. I’ve opened the pelvic floor on the <a href="#explore">body map</a>.',r:'pelvic'},
+ {k:['stroke','neuro','parkinson','balance','ms ','concussion','dizzy'],a:'Neuro rehab focuses on balance, walking and strength after stroke, concussion or conditions like Parkinson’s. Book a neuro rehab session on the <a href="#book">Book Us</a> page.'},
+ {k:['back','sciatica','disc','spine','lumbar'],a:'Most low back pain improves with the right movement plan. I’ve opened the lower back on the <a href="#explore">body map</a>, with an exercise to try.',r:'lowback'},
+ {k:['neck','headache','posture'],a:'Neck pain often comes from posture and stiffness. Try chin tucks, shown on the <a href="#explore">body map</a>.',r:'neck'},
+ {k:['shoulder','rotator'],a:'Shoulder care starts with restoring motion, then strengthening the rotator cuff. See the shoulder on the <a href="#explore">body map</a>.',r:'shoulder'},
+ {k:['knee','acl','menisc'],a:'Knee rehab focuses on getting full straightening early, then strength and balance. The knee is open on the <a href="#explore">body map</a>.',r:'knee'},
+ {k:['hip','glute'],a:'Hip pain often responds well to glute and hip strengthening. See the hip on the <a href="#explore">body map</a>.',r:'hip'},
+ {k:['ankle','foot','plantar','achilles','sprain'],a:'Ankle and foot rehab covers balance, calf strength and footwear. See it on the <a href="#explore">body map</a>.',r:'ankle'},
+ {k:['wrist','hand','carpal'],a:'For wrist and hand pain, tendon glides are a good start. See the <a href="#explore">body map</a>.',r:'wrist'},
+ {k:['elbow','tennis','golfer'],a:'Tennis and golfer’s elbow improve with gradual tendon loading. See the elbow on the <a href="#explore">body map</a>.',r:'elbow'},
+ {k:['hours','open','when'],a:'Placeholder hours: Mon to Thu 7:00 to 19:00, Fri 7:00 to 15:00, Sat 8:00 to 12:00, closed Sunday.'},
+ {k:['where','address','location','contact','phone','email'],a:'Placeholder contact: 123 Placeholder Ave, Suite 4, (555) 010-0199.'},
+ {k:['instagram','social','video'],a:'Follow Dr. Kapoor at @ishaankapoordpt. See the <a href="#socials">Socials</a> page.'},
+ {k:['certif','qualif','license','dpt','experience'],a:'Dr. Kapoor is a Doctor of Physical Therapy skilled in patient assessment, diagnostic testing and neuro rehabilitation. See <a href="#certifications">Certifications</a>.'},
+ {k:['emergency','chest pain','numb','can’t feel','severe'],a:'If you have chest pain, sudden weakness or numbness, loss of bladder control, or severe pain after a fall, call 911 or go to the emergency room now.'},
+ {k:['blog','article','read'],a:'The <a href="#blog">Blog</a> has articles on pelvic health, stroke recovery, desk neck and your first visit.'},
+ {k:['thank'],a:'Happy to help! Anything else?'}
+];
+const quick=['How do I book?','Pelvic floor therapy','Low back pain','First visit','Insurance'];
+const log=$('#chatLog');
+function add(html,who){const m=document.createElement('div');m.className='msg '+who;m.innerHTML=html;log.appendChild(m);log.scrollTop=log.scrollHeight;return m;}
+function answer(text){
+  const t=' '+text.toLowerCase()+' ';
+  const urgent=KB.find(x=>x.k.includes('emergency'));
+  let hit=urgent.k.some(k=>t.includes(k))?urgent:KB.find(x=>x.k.some(k=>t.includes(k)));
+  const typing=add('<span class="typing"><i></i><i></i><i></i></span>','bot');
+  setTimeout(()=>{typing.remove();
+    if(hit){add(hit.a,'bot'); if(hit.r){ select(hit.r); }}
+    else add('I don’t have a good answer for that yet. Dr. Kapoor can help at your visit. You can <a href="#book">book here</a>, or ask about pain in a body part, pelvic floor, insurance or hours.','bot');
+  },650);
+}
+$('#chatQuick').innerHTML=quick.map(q=>`<button type="button">${q}</button>`).join('');
+$('#chatQuick').querySelectorAll('button').forEach(b=>b.onclick=()=>{add(b.textContent,'me');answer(b.textContent);});
+$('#chatForm').onsubmit=e=>{e.preventDefault();const v=$('#chatInput').value.trim();if(!v)return;add(v.replace(/</g,'&lt;'),'me');$('#chatInput').value='';answer(v);};
+add('Hi, I’m the clinic assistant. Ask me about a body part, pelvic floor therapy, your first visit, or booking. I share general information, not medical advice.','bot');
+const toggleChat=o=>{$('#chat').hidden=!o;$('#chatFab').setAttribute('aria-expanded',o);if(o)$('#chatInput').focus();};
+$('#chatFab').onclick=()=>toggleChat($('#chat').hidden);
+$('#chatClose').onclick=()=>toggleChat(false);
+log.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;if(window.innerWidth<600)toggleChat(false);if(a.getAttribute('href')===location.hash){e.preventDefault();route();}});
+
+route();
+})();
+</script>
+
+</body>
+</html>
