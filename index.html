@@ -62,7 +62,12 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:va
   .menu-btn{display:block}
   .links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
   .links.open{display:flex}
-  .nav-cta{display:none}
+  .nav-cta{order:2;padding:8px 12px;font-size:.85rem;margin-left:auto}
+  .menu-btn{order:3}
+  .brand{font-size:1.05rem;white-space:nowrap}
+  .nav-cta{white-space:nowrap}
+  .brand-mark{width:28px;height:28px}
+  .nav{gap:10px}
 }
 
 /* tape motif */
@@ -327,7 +332,6 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-bet
     <ul class="links" id="navLinks">
       <li><a href="#home">Home</a></li>
       <li><a href="#testimonials">Testimonials</a></li>
-      <li><a href="#book">Book Us</a></li>
       <li><a href="#socials">Socials</a></li>
       <li><a href="#certifications">Certifications</a></li>
       <li><a href="#faq">FAQs</a></li>
@@ -418,7 +422,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-bet
     <div class="wrap">
       <div class="band">
         <div style="display:grid;gap:8px;max-width:560px"><h2>Ready for a plan made for you?</h2><p>Your first visit includes a full assessment, a clear explanation of what's going on, and exercises you can start the same day.</p></div>
-        <a class="btn btn-primary" href="#book" style="background:#fff;color:var(--tape-blue)">Book Us</a>
+        <a class="btn btn-primary" href="#book" style="background:#fff;color:var(--tape-blue)">Book a visit</a>
       </div>
     </div>
   </div>
@@ -441,7 +445,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-bet
 <!-- BOOK -->
 <section class="page section" id="page-book" data-page="book" hidden>
   <div class="wrap">
-    <div class="section-head"><span class="eyebrow">Book Us</span><h2>Request an appointment</h2><p class="lede">Pick a visit type and a time that works. This is a demo form, so no request is sent yet.</p></div>
+    <div class="section-head"><span class="eyebrow">Book a visit</span><h2>Request an appointment</h2><p class="lede">Pick a visit type and a time that works. This is a demo form, so no request is sent yet.</p></div>
     <div class="book">
       <div id="bookArea">
         <form class="panel-form" id="bookForm" novalidate>
@@ -824,7 +828,7 @@ const F=[
  ['Do you take insurance?','Placeholder: the clinic will list accepted plans here. Out-of-network superbills and self-pay rates will also be available.'],
  ['How many sessions will I need?','It depends on the condition and your goals. Many patients need 6 to 12 visits. You’ll get an estimate after your evaluation.'],
  ['What should I wear?','Comfortable clothes you can move in. Shorts for knee or hip problems and a tank top for shoulder or neck problems help.'],
- ['Do you offer virtual visits?','Yes, for consults, exercise progressions and some follow-ups. Pick "Virtual visit" on the Book Us page.'],
+ ['Do you offer virtual visits?','Yes, for consults, exercise progressions and some follow-ups. Pick "Virtual visit" on the booking page.'],
  ['Is physical therapy painful?','Some exercises can feel like effort or mild soreness, but treatment should never feel like sharp pain. Tell your therapist and the plan gets adjusted.'],
  ['What is neuro rehab?','Therapy for people with conditions of the brain, spinal cord or nerves, such as stroke, Parkinson’s, MS or concussion, focused on balance, walking, strength and daily function.']
 ];
@@ -900,12 +904,12 @@ window.showBlog=showBlog;
 /* ---------- chatbot ---------- */
 const KB=[
  {k:['hi','hello','hey'],a:'Hi! I can answer questions about physical therapy, the clinic, and booking. What’s going on?'},
- {k:['book','appointment','schedule','availability','available'],a:'You can request a time on the <a href="#book">Book Us</a> page. Initial evaluations are 60 minutes.'},
+ {k:['book','appointment','schedule','availability','available'],a:'You can request a time on the <a href="#book">booking</a> page. Initial evaluations are 60 minutes.'},
  {k:['insurance','cost','price','pay','copay','self-pay'],a:'Insurance details are still being added. The clinic plans to offer insurance billing, superbills and self-pay rates. See the <a href="#faq">FAQs</a>.'},
  {k:['referral','prescription'],a:'In many states you can start PT without a referral. Some insurance plans require one, so the clinic will check when you book.'},
  {k:['first visit','evaluation','expect','first appointment'],a:'Your first visit is a 60 minute evaluation: history, movement and strength testing, a clear explanation, and exercises you can start that day.'},
  {k:['pelvic','leak','incontinence','postpartum','pregnan','prolapse','bladder'],a:'Pelvic floor therapy is Dr. Kapoor’s specialty. It helps with leakage, pelvic pain and pregnancy or postpartum recovery. I’ve opened the pelvic floor on the <a href="#explore">body map</a>.',r:'pelvic'},
- {k:['stroke','neuro','parkinson','balance','ms ','concussion','dizzy'],a:'Neuro rehab focuses on balance, walking and strength after stroke, concussion or conditions like Parkinson’s. Book a neuro rehab session on the <a href="#book">Book Us</a> page.'},
+ {k:['stroke','neuro','parkinson','balance','ms ','concussion','dizzy'],a:'Neuro rehab focuses on balance, walking and strength after stroke, concussion or conditions like Parkinson’s. Book a neuro rehab session on the <a href="#book">booking</a> page.'},
  {k:['back','sciatica','disc','spine','lumbar'],a:'Most low back pain improves with the right movement plan. I’ve opened the lower back on the <a href="#explore">body map</a>, with an exercise to try.',r:'lowback'},
  {k:['neck','headache','posture'],a:'Neck pain often comes from posture and stiffness. Try chin tucks, shown on the <a href="#explore">body map</a>.',r:'neck'},
  {k:['shoulder','rotator'],a:'Shoulder care starts with restoring motion, then strengthening the rotator cuff. See the shoulder on the <a href="#explore">body map</a>.',r:'shoulder'},
