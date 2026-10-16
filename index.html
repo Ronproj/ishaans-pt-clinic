@@ -237,6 +237,11 @@ textarea{min-height:90px;resize:vertical}
 .photo-pair figcaption{color:var(--muted);font-size:.88rem}
 @media (max-width:760px){.profile,.photo-pair{grid-template-columns:1fr}}
 .post{border:0;padding:0;cursor:pointer;font:inherit;text-align:left;width:100%}
+.ig-grid.real{grid-template-columns:repeat(2,minmax(0,1fr));max-width:860px;gap:24px}
+@media (max-width:700px){.ig-grid.real{grid-template-columns:1fr}}
+.post.embed{aspect-ratio:auto;height:740px;background:var(--surface);border:1px solid var(--line);cursor:default}
+.post.embed::after{display:none}
+.post.embed iframe{width:100%;height:100%;border:0;display:block}
 .post img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
 .post:hover img{transform:scale(1.04)}
 .post::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,18,28,.15),rgba(10,18,28,.55))}
@@ -483,12 +488,12 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-bet
       <div class="ig-meta">
         <span class="handle">@ishaankapoordpt</span>
         <span>Ishaan Kapoor, PT, DPT</span>
-        <div class="ig-counts"><span>Tap any post or reel to open it here</span></div>
+        <div class="ig-counts"><span>Recent reels, playable right here</span></div>
       </div>
       <a class="btn btn-primary" href="https://www.instagram.com/ishaankapoordpt?rpxt=MXFpcWFxdzhyMDg4dw==" target="_blank" rel="noopener">Open Instagram</a>
     </div>
-    <div class="notice"><span class="tag">Placeholder</span> Sample tiles. Add his real post or reel links to the list in the code and each pop-up will play the actual Instagram video.</div>
-    <div class="ig-grid" id="igGrid"></div>
+    
+    <div class="ig-grid real" id="igGrid"></div>
   </div>
 </section>
 <div class="modal" id="igModal" role="dialog" aria-modal="true" aria-label="Instagram post" hidden>
@@ -769,16 +774,15 @@ $('#bookForm').addEventListener('submit',e=>{
 const IG='https://www.instagram.com/ishaankapoordpt?rpxt=MXFpcWFxdzhyMDg4dw==';
 /* Paste real Instagram links into url (e.g. https://www.instagram.com/reel/ABC123/) and the pop-up will play the post. */
 const POSTS=[
- {kind:'Reel',img:'images/explain.jpg',title:'What your low back pain is really telling you',text:'Using a spine model to explain why most back pain is not damage, and what to do about it.',url:null},
- {kind:'Reel',img:'images/pelvic.jpg',title:'Pelvic floor: it’s not just Kegels',text:'Why relaxing the pelvic floor matters as much as strengthening it, with a breathing drill to try.',url:null},
- {kind:'Post',img:'images/hero.jpg',title:'Knee pain on stairs? Start here',text:'Three checks we do in every knee evaluation, and the first exercise most patients get.',url:null},
- {kind:'Reel',img:'images/neuro.jpg',title:'Gait training after a stroke',text:'How parallel bars and a gait belt help patients rebuild walking safely.',url:null},
- {kind:'Reel',img:'images/balance.jpg',title:'A 30-second balance test',text:'Single-leg balance on foam: a quick way to check fall risk and track progress.',url:null},
- {kind:'Post',img:'images/ortho.jpg',title:'Shoulder strength with one band',text:'External rotation with a resistance band, done the right way.',url:null}
+ {kind:'Reel',title:'Reel 1 from @ishaankapoordpt',url:'https://www.instagram.com/reel/DdpRqB9RoOi/'},
+ {kind:'Reel',title:'Reel 2 from @ishaankapoordpt',url:'https://www.instagram.com/reel/DdzZub4xBAa/'},
+ {kind:'Reel',title:'Reel 3 from @ishaankapoordpt',url:'https://www.instagram.com/reel/DZmxJ4EBkR8/'},
+ {kind:'Reel',title:'Reel 4 from @ishaankapoordpt',url:'https://www.instagram.com/reel/DY2XrgQRuq2/'}
 ];
 const playSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>';
 const postSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="4"/></svg>';
-$('#igGrid').innerHTML=POSTS.map((p,i)=>`<button type="button" class="post" data-i="${i}" aria-label="${p.kind}: ${p.title}">
+const embedUrl=u=>u&&/instagram\.com\/(p|reel|tv)\//.test(u)?u.split('?')[0].replace(/\/?$/,'/')+'embed':null;
+$('#igGrid').innerHTML=POSTS.map((p,i)=>embedUrl(p.url)?`<div class="post embed"><iframe src="${embedUrl(p.url)}" title="${p.title}" loading="lazy" allow="encrypted-media; autoplay" allowtransparency="true" scrolling="no"></iframe></div>`:`<button type="button" class="post" data-i="${i}" aria-label="${p.kind}: ${p.title}">
   <img src="${p.img}" alt="" loading="lazy">
   <span class="kind">${p.kind}</span>
   <span class="play"><span>${p.kind==='Reel'?playSvg:postSvg}</span></span>
